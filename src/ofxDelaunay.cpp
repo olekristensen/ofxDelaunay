@@ -200,7 +200,9 @@ int ofxDelaunay::triangulate(){
 
 // ------------------------------------------------------------------------------------------------------
 void ofxDelaunay::draw(){
-    if(ofGetStyle().bFill)
-        triangleMesh.draw();
-    else triangleMesh.drawWireframe();
+    if(nTriangles > 0){
+        if(ofGetStyle().bFill)
+            triangleMesh.draw();
+        else triangleMesh.drawWireframe();
+    }
 }

@@ -30,6 +30,10 @@ class ofxDelaunay {
     
 public:
     
+    ofxDelaunay(){
+        reset();
+    }
+    
     /// \brief reset() removes all vertices, triangles and meshes
 	void reset();
 	
@@ -81,7 +85,7 @@ private:
 
     vector<XYZI> vertices;                          //< Only input of triangulate();
     vector<ITRIANGLE> triangles;                    //< Output of triangulate();
-    int nTriangles;                                 //< Number of triangles
+    int nTriangles = 0;                              //< Number of triangles
     
     /// \brief Auxiliary method to check if a point is inside a triangle
     bool pointIsInsideTriangle(const ofDefaultVec3 & p, const XYZ & p0, const XYZ & p1, const XYZ& p2);
