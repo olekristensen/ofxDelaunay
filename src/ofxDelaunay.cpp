@@ -64,7 +64,9 @@ void ofxDelaunay::removePointAtIndex(int index){
 ofDefaultVec3 ofxDelaunay::getPointNear(ofDefaultVec3 pos, float minimumDist, int & index){
     XYZI ret;
     XYZ p; p.x = pos.x; p.y = pos.y; p.z = pos.z;
+    
     float minDist = FLT_MAX;
+    
     for(int i = 0; i < vertices.size() ; i++){
         float d = ofDist(vertices[i].x, vertices[i].y, p.x, p.y);
         if(d < minDist ) {
@@ -73,6 +75,7 @@ ofDefaultVec3 ofxDelaunay::getPointNear(ofDefaultVec3 pos, float minimumDist, in
             ret = vertices[i];
         }
     }
+    
     if (minDist > minimumDist){
         ret.x = ret.y = ret.z = 0.0f;
         index = -1;
@@ -194,7 +197,7 @@ int ofxDelaunay::triangulate(){
         triangleMesh.addIndex(verticesTemp.at(triangles[ i ].p2).i);
         triangleMesh.addIndex(verticesTemp.at(triangles[ i ].p3).i);
     }
-    
+        
     return nTriangles;
 }
 
