@@ -18,11 +18,22 @@
 
 #include "ofMain.h"
 #include "Delaunay.h"
+#include "ofJson.h"
 
 struct XYZI{
 	double x, y, z;     //< Triangle Coordinates
 	int i;              //< Triangle index
 };
+
+using nlohmann::json;
+
+void to_json(json& j, const XYZI& v);
+
+void from_json(const json& j, XYZI& v);
+
+void to_json(json& j, const ITRIANGLE& t);
+
+void from_json(const json& j, ITRIANGLE& t);
 
 int XYZICompare(const void *v1, const void *v2);
 
@@ -80,6 +91,10 @@ public:
 	
     ofMesh triangleMesh;                //< Output of triangulate();
 
+    ofJson getAsJson();
+    
+    int setFromJson(ofJson & json);
+    
 
 private:
 

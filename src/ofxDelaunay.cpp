@@ -16,12 +16,59 @@
 
 #include "ofxDelaunay.h"
 
+void to_json(json& j, const XYZI& v) {
+    j = json{
+        {"x", v.x},
+        {"y", v.y},
+        {"z", v.z},
+        {"i", v.i}
+    };
+}
+
+void from_json(const json& j, XYZI& v) {
+    v.x = j.at("x").get<double>();
+    v.y = j.at("y").get<double>();
+    v.z = j.at("z").get<double>();
+    v.i = j.at("i").get<int>();
+}
+
+void to_json(json& j, const ITRIANGLE& t) {
+    j = json{ t.p1, t.p2, t.p3 };
+}
+
+void from_json(const json& j, ITRIANGLE& t) {
+    t.p1 = j[0].get<int>();
+    t.p2 = j[1].get<int>();
+    t.p3 = j[2].get<int>();
+}
+
 void ofxDelaunay::reset(){
     vertices.clear();
     triangles.clear();
 	triangleMesh.clear();
 	nTriangles = 0;
 }
+
+ofJson ofxDelaunay::getAsJson(){
+    ofJson j;
+    j["triangles"] = triangles;
+    j["vertices"] = vertices;
+    j["nTriangles"] = nTriangles;
+    return j;
+}
+
+int ofxDelaunay::setFromJson(ofJson &json){
+    triangles = json["triangles"].get< vector<ITRIANGLE> >();
+    vertices = json["vertices"].get< vector<XYZI> >();
+    nTriangles = json["nTriangles"].get<int>();
+    
+    triangulate();
+    
+    return nTriangles;
+
+}
+
+
 
 // ------------------------------------------------------------------------------------------------------
 int ofxDelaunay::addPoint( float x, float y, float z ){
@@ -46,18 +93,37 @@ int ofxDelaunay::addPoints( vector<ofDefaultVec3>& points ){
 }
 
 void ofxDelaunay::setPointAtIndex(ofDefaultVec3 p, int index){
-    if (index >= 0 && index < vertices.size()){
-        XYZI pp; pp.x = p.x; pp.y = p.y; pp.z = p.z; pp.i = index;
-        vertices[index] = pp;
+    XYZI pp; pp.x = p.x; pp.y = p.y; pp.z = p.z; pp.i = index;
+    
+    for (int i = 0; i < vertices.size(); i++) {
+        if (vertices[i].i == index) {
+            vertices[i] = pp;
+            triangulate();
+            break;
+        }
     }
-    triangulate();
 }
 
 void ofxDelaunay::removePointAtIndex(int index){
-    if (index >= 0 && index < vertices.size()){
-        vertices.erase(vertices.begin()+index);
+    int toErase = -1;
+    
+    for (int i = 0; i < vertices.size(); i++) {
+        if (vertices[i].i == index) {
+            toErase = i;
+        }
+        
+        //Decrement the stored indices to maintain order.
+        //If this is not done, when new points are added, their indices, which are
+        //based one the number of stored vertices, can be equal to an existing index.
+        if (vertices[i].i > index) {
+            vertices[i].i--;
+        }
     }
-    triangulate();
+    
+    if (toErase != -1) {
+        vertices.erase(vertices.begin() + toErase);
+        triangulate();
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------

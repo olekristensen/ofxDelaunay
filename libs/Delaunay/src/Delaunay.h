@@ -31,8 +31,8 @@ struct XYZ{
 
 int XYZCompare(const void *v1, const void *v2);
 int Triangulate(int nv, XYZ pxyz[], ITRIANGLE v[], int &ntri);
-int CircumCircle(double, double, double, double, double, double, double, 
-double, double&, double&, double&);
+int CircumCircle(double, double, double, double, double, double, double,
+                 double, double&, double&, double&);
 
 #endif
 

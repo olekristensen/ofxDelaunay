@@ -9,7 +9,8 @@
 
 #include "Delaunay.h"
 
-using namespace std; 
+using namespace std;
+
 
 ////////////////////////////////////////////////////////////////////////
 // CircumCircle() :
